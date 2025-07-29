@@ -1,6 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 
-
 //#include<iostream>
 //using namespace std;
 //
@@ -112,7 +111,7 @@
 //	return 0;
 //}
 
-//1.函数参数类型不同
+////1.函数参数类型不同
 //#include<iostream>
 //using namespace std;
 //
@@ -183,7 +182,7 @@
 //}
 
 //还有两种特殊情况，一个不能构成函数重载，一个构成了但是存在调用的歧义
-////1.无法构成重载
+//1.无法构成重载
 //#include<iostream>
 //using namespace std;
 //
@@ -229,7 +228,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //引用
-
+//
 //#include<iostream>
 //using namespace std;
 //
@@ -293,19 +292,21 @@
 //	return 0;
 //}
 
-//顺序表里面的引用使用，这里就不再提供具体操作和结构了
-////void SLInit(SL* psl, int n = 4)
-//void SLInit(SL& psl, int n = 4)
-
+//#include"SeqList.h"
+//
+////顺序表里面的引用使用，这里就不再提供具体操作和结构了
+//void SLInit(SL* psl, int n = 4);
+//void SLInit(SL& psl, int n = 4);
+//
 //int main()
 //{
-//	//SL s;
-//	//	SLInit(&s);
-//	//  SLInit(s);//不需要传地址了
+//	SL s;
+//	SLInit(&s);
+//	SLInit(s);//不需要传地址了
 //}
 
 
-//替代二级指针使用
+////替代二级指针使用
 //#include<iostream>
 //using namespace std;
 //
@@ -419,11 +420,11 @@
 //int main()
 //{
 //	int x = fun();//x接受的其实是ret的拷贝值，在fun函数销毁时ret就没了，通过临时变量带出
-//	fun() += 1;//所以这里就无法直接修改
+//	//fun() += 1;//所以这里就无法直接修改
 //	return 0;
 //}
 
-////传引用返回
+//传引用返回
 //#include<iostream>
 //using namespace std;
 //
@@ -540,20 +541,20 @@
 //}
 
 //
-//#include<iostream>
-//using namespace std;
-//
-//int main()
-//{
-//	int i = 0;
-//	//语法层面上引用不开空间，指针开空间
-//	int& j = i;
-//	int* p = &i;
-//
-//	j++;
-//	(*p)++;
-//
-//	//但是我们转到反汇编，可以看出其实引用的底层就是指针，两个指令的反汇编代码都差不多，这个需要仔细观察一下
-//
-//	return 0;
-//}
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	int i = 0;
+	//语法层面上引用不开空间，指针开空间
+	int& j = i;
+	int* p = &i;
+
+	j++;
+	(*p)++;
+
+	//但是我们转到反汇编，可以看出其实引用的底层就是指针，两个指令的反汇编代码都差不多，这个需要仔细观察一下
+
+	return 0;
+}

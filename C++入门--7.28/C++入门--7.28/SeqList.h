@@ -3,7 +3,8 @@
 //typedef struct SeqList 
 //{
 //	int* arr;
-//	int data;
+//	int size;
+//	int capacity;
 //}SL;
 //
 //void SLInit(SL* pls,int n=4);

@@ -13,10 +13,10 @@
 //int SLFind(SL* pls, int x,int i)//从n开始找，默认的时候缺省为0,在.h文件中看
 //{
 //	//……………………
-// while (i < pls.size)
+// while (i < pls->size)
 //  {
-	//………………
-//	}
+//	//………………
+//  }
 //
 //	return -1;//没找到
 //}
