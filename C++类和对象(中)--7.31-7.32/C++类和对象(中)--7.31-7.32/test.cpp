@@ -366,86 +366,84 @@
 
 
 
-//#include<iostream>
-//using namespace std;
-//typedef int STDataType;
-//
-//class Stack 
-//{
-//public:
-//	Stack(int n=4)
-//	{
-//		_a = (int*)malloc(n * sizeof(int));
-//		if (_a == nullptr)
-//		{
-//			perror("malloc fail!");
-//			exit(1);
-//		}
-//		_top = 0;
-//		_capacity = n;
-//	}
-//	//这样写是错的，因为这里的数组如果像这样写仅仅是浅拷贝，后续析构函数释放空间会释放同一块空间
-//	// 画图理解，调试也会报错
-//	/*Stack(const Stack& s)
-//	{
-//		_a = s._a;
-//		_capacity = s._capacity;
-//		_top = s._top;
-//	}*/
-//
-//	//所以我们需要这样写
-//	Stack(const Stack& s)
-//	{
-//		_a = (STDataType*)malloc(sizeof(STDataType) * s._capacity);//申请一块同样大小的空间
-//		if (_a == nullptr)
-//		{
-//			perror("malloc fail!");
-//			exit(1);
-//		}
-//		//把值再拷贝过去
-//		memcpy(_a, s._a, s._top * sizeof(STDataType));
-//		//这两个直接这样就可以了
-//		_capacity = s._capacity;
-//		_top = s._top;
-//	}
-//	//补充一点，这里也不能不写，用编译器自动生成的默认的拷贝构造函数，因为这个函数虽然会处理内置类型
-//	//但是只会是浅拷贝/值拷贝,像Stack这样需要有深拷贝的就不行了
-//	//可以这样说，如果一个类必须显示实现析构函数(需要释放资源),那么他就一点也要显示写拷贝构造函数
-//
-//	void Push(STDataType x)
-//	{
-//		if (_top == _capacity)
-//		{
-//			int newcapacity = _capacity * 2;
-//			STDataType* tmp = (STDataType*)realloc(_a, newcapacity *sizeof(STDataType));
-//			if (tmp == NULL)
-//			{
-//				perror("realloc fail");
-//				exit(1);
-//			}
-//			_a = tmp;
-//			_capacity = newcapacity;
-//		}
-//		_a[_top++] = x;
-//	}
-//
-//	~Stack()
-//	{
-//		cout<<"~Stack()"<<'\n';
-//		if (_a)
-//		{
-//			free(_a);
-//			_a = nullptr;
-//		}
-//		_top = 0;
-//		_capacity = 0;
-//	}
-//private:
-//	//内置类型
-//	STDataType* _a;
-//	int _top;
-//	int _capacity;
-//};
+#include<iostream>
+using namespace std;
+typedef int STDataType;
+
+class Stack 
+{
+public:
+	Stack(int n=4)
+	{
+		_a = (STDataType*)malloc(n * sizeof(STDataType));
+		if (nullptr==_a)
+		{
+			perror("malloc fail!");
+			exit(1);
+		}
+		_top = 0;
+		_capacity = n;
+	}
+	//这样写是错的，因为这里的数组如果像这样写仅仅是浅拷贝，后续析构函数释放空间会释放同一块空间
+	// 画图理解，调试也会报错
+	/*Stack(const Stack& s)
+	{
+		_a = s._a;
+		_capacity = s._capacity;
+		_top = s._top;
+	}*/
+
+	//所以我们需要这样写
+	Stack(const Stack& s)
+	{
+		_a = (STDataType*)malloc(sizeof(STDataType) * s._capacity);//申请一块同样大小的空间
+		if (_a == NULL)
+		{
+			perror("ralloc fail!");
+			return;
+		}
+		//把值再拷贝过去
+		memcpy(_a, s._a, s._top * sizeof(STDataType));
+		//这两个直接这样就可以了
+		_capacity = s._capacity;
+		_top = s._top;
+	}
+	//补充一点，这里也不能不写，用编译器自动生成的默认的拷贝构造函数，因为这个函数虽然会处理内置类型
+	//但是只会是浅拷贝/值拷贝,像Stack这样需要有深拷贝的就不行了
+	//可以这样说，如果一个类必须显示实现析构函数(需要释放资源),那么他就一点也要显示写拷贝构造函数
+
+	void Push(STDataType x)
+	{
+		if (_top == _capacity)
+		{
+			int newcapacity = _capacity * 2;
+			STDataType* tmp = (STDataType*)realloc(_a, newcapacity *sizeof(STDataType));
+			if (tmp == NULL)
+			{
+				perror("realloc fail");
+				exit(1);
+			}
+			_a = tmp;
+			_capacity = newcapacity;
+		}
+		_a[_top++] = x;
+	}
+
+	~Stack()
+	{
+		cout<<"~Stack()"<<'\n';
+			free(_a);
+			_a = nullptr;
+
+		_top = 0;
+		_capacity = 0;
+	}
+private:
+	//内置类型
+	STDataType* _a;
+	size_t _top;
+	size_t _capacity;
+};
 //
 //int main()
 //{
@@ -459,34 +457,46 @@
 //
 //	return 0;
 //}
+//class MyQueue
+//{
+//public:
+//	//编译器默认生成MyQueue的构造函数调用了Stack的构造函数，完成了两个成员的初始化
+//	//编译器默认生成MyQueue的拷贝构造函数调用了Stack的拷贝构造函数，完成了拷贝
+//	//编译器默认生成MyQueue的析构函数调用了Stack的析构函数，释放的Stack内部的资源
+//private:
+//	//自定义类型
+//	Stack _pushst;
+//	Stack _popst;
+//	//内置类型，但很奇怪，混在这里它却能处理，这里大家可以自己去试试
+//	//int size = 0;
+//};
 
+//借助上面的类，给大家对比看看传引用返回在这里的弊端,同时也是在说第6个特点
+int& func1()
+{
+	int x = 1;
+	return x;
+}
 
-////借助上面的类，给大家对比看看传引用返回在这里的弊端,同时也是在说第6个特点
-//int& func1()
-//{
-//	int x = 1;
-//	return x;
-//}
-//
-////自定义类型传值返回是会调用拷贝函数的，但是传引用返回不会，画图分析。
-////它没调拷贝函数的话，在后面函数栈帧销毁，st析构掉了之后。你再通过别名来找，就出问题了,画图
-////Stack func2()
-//Stack& func2()
-//{
-//	Stack st;
-//	return st;
-//}
-//
-//int main()
-//{
-//	int ret1 = func1();
-//	cout << ret1 << '\n';//可能是1也可能是随机值，我们之前判断过
-//
-//	//但是这个栈就很明显了，我们调试看看
-//	Stack ret2 = func2();//这里其实也是拷贝
-//
-//	return 0;
-//}
+//自定义类型传值返回是会调用拷贝函数的，但是传引用返回不会，画图分析。
+//它没调拷贝函数的话，在后面函数栈帧销毁，st析构掉了之后。你再通过别名来找，就出问题了,画图
+//Stack func2()
+Stack& func2()
+{
+	Stack st;
+	return st;
+}
+
+int main()
+{
+	int ret1 = func1();
+	cout << ret1 << '\n';//可能是1也可能是随机值，我们之前判断过
+
+	//但是这个栈就很明显了，我们调试看看
+	Stack ret2 = func2();//这里其实也是拷贝
+
+	return 0;
+}
 
 ////再来看看默认生成的拷贝构造函数对自定义类型的处理
 //#include<iostream>
@@ -707,73 +717,178 @@
 
 
 
-//赋值运算符重载
-#include<iostream>
-using namespace std;
+////赋值运算符重载
+//#include<iostream>
+//using namespace std;
+//
+//class Date 
+//{
+//public:
+//	Date(int year = 1, int month = 1, int day = 1)
+//	{
+//		_year = year;
+//		_month = month;
+//		_day = day;
+//	}
+//	Date(const Date& d)
+//	{
+//		_year = d._year;
+//		_month = d._month;
+//		_day = d._day;
+//	}
+//
+//	//传引用返回可以减少拷贝(之前提到过在这里传值返回是自动调用拷贝函数的)
+//	//这里能使用是传引用返回是因为第一个参数用this来的，函数栈帧销毁也不会找不到
+//	//函数要返回类型是为例更好处理连续赋值的情况(d3=d1=d2)，用void不好处理
+//	Date& operator=(const Date& d)//const和传引用传参的作用就不再多说了
+//	{
+//		//自己等于自己就可以不用赋值了
+//		if (this != &d)
+//		{
+//			_year = d._year;
+//			_month = d._month;
+//			_day = d._day;
+//		}
+//
+//		//比如：d1=d2表达式的返回对象应该为d1,也就是*this
+//		return *this;
+//	}
+//	//赋值运算符重载，但其实在Date类型里面不写也没影响，跟拷贝构造函数处理内置类型原理一样
+//	//思考联想方法也一样，不再说了
+//
+//	void Print()
+//	{
+//		cout << _year << "/" << _month << "/" << _day << '\n';
+//	}
+//private:
+//	int _year;
+//	int _month;
+//	int _day;
+//};
+//
+//int main()
+//{
+//	Date d1;
+//	Date d2(2025, 8, 1);
+//	d1 = d2;
+//
+//	Date d3;
+//	d3 = d1 = d2;//从右往左
+//
+//	d1.Print();
+//	d2.Print();
+//	d3.Print();
+//
+//	// 需要注意这里是拷⻉构造，不是赋值重载
+//	// 要牢牢记住赋值重载完成两个已经存在的对象直接的拷⻉赋值
+//	// 而拷⻉构造用于一个对象拷⻉初始化给另⼀个要创建的对象
+//	Date d4 = d1;//因为拷贝构造如果写出这样就有点容易混
+//	//Date d4(d1);//写成这样的时候不太容易混淆
+//
+//	return 0;
+//}
 
-class Date 
-{
-public:
-	Date(int year = 1, int month = 1, int day = 1)
-	{
-		_year = year;
-		_month = month;
-		_day = day;
-	}
-	Date(const Date& d)
-	{
-		_year = d._year;
-		_month = d._month;
-		_day = d._day;
-	}
 
-	//传引用返回可以减少拷贝(之前提到过在这里传值返回是自动调用拷贝函数的)
-	//这里能使用是传引用返回是因为第一个参数用this来的，函数栈帧销毁也不会找不到
-	//函数要返回类型是为例更好处理连续赋值的情况(d3=d1=d2)，用void不好处理
-	Date& operator=(const Date& d)//const和传引用传参的作用就不再多说了
-	{
-		//自己等于自己就可以不用赋值了
-		if (this != &d)
-		{
-			_year = d._year;
-			_month = d._month;
-			_day = d._day;
-		}
 
-		//比如：d1=d2表达式的返回对象应该为d1,也就是*this
-		return *this;
-	}
-	//赋值运算符重载，但其实在Date类型里面不写也没影响，跟拷贝构造函数处理内置类型原理一样
-	//思考联想方法也一样，不再说了
-
-	void Print()
-	{
-		cout << _year << "/" << _month << "/" << _day << '\n';
-	}
-private:
-	int _year;
-	int _month;
-	int _day;
-};
-
-int main()
-{
-	Date d1;
-	Date d2(2025, 8, 1);
-	d1 = d2;
-
-	Date d3;
-	d3 = d1 = d2;//从右往左
-
-	d1.Print();
-	d2.Print();
-	d3.Print();
-
-	// 需要注意这里是拷⻉构造，不是赋值重载
-	// 要牢牢记住赋值重载完成两个已经存在的对象直接的拷⻉赋值
-	// 而拷⻉构造用于一个对象拷⻉初始化给另⼀个要创建的对象
-	Date d4 = d1;//因为拷贝构造如果写出这样就有点容易混
-	//Date d4(d1);//写成这样的时候不太容易混淆
-
-	return 0;
-}
+//#include<iostream>
+//using namespace std;
+//typedef int STDataType;
+//class Stack
+//{
+//public:
+//	Stack(int n = 4)
+//	{
+//		_a = (STDataType*)malloc(sizeof(STDataType) * n);
+//		if (nullptr == _a)
+//		{
+//			perror("malloc申请空间失败");
+//			return;
+//		}
+//		_capacity = n;
+//		_top = 0;
+//	}
+//
+//	// Stack st2(st1);
+//	/*Stack(const Stack& s)
+//	{
+//		_a = s._a;
+//		_capacity = s._capacity;
+//		_top = s._top;
+//	}*/
+//
+//	Stack(const Stack& s)
+//	{
+//		_a = (STDataType*)malloc(sizeof(STDataType) * s._capacity);
+//		if (_a == NULL)
+//		{
+//			perror("realloc fail");
+//			return;
+//		}
+//
+//		memcpy(_a, s._a, s._top * sizeof(STDataType));
+//
+//		_capacity = s._capacity;
+//		_top = s._top;
+//	}
+//
+//	void Push(STDataType x)
+//	{
+//		if (_top == _capacity)
+//		{
+//			int newcapacity = _capacity * 2;
+//			STDataType* tmp = (STDataType*)realloc(_a, newcapacity *
+//				sizeof(STDataType));
+//			if (tmp == NULL)
+//			{
+//				perror("realloc fail");
+//				return;
+//			}
+//			_a = tmp;
+//			_capacity = newcapacity;
+//		}
+//		_a[_top++] = x;
+//	}
+//
+//	~Stack()
+//	{
+//		cout << "~Stack()" << endl;
+//		free(_a);
+//		_a = nullptr;
+//		_top = _capacity = 0;
+//	}
+//private:
+//	STDataType* _a;
+//	size_t _capacity;
+//	size_t _top;
+//};
+//
+//class MyQueue
+//{
+//private:
+//	Stack _pushst;
+//	Stack _popst;
+//};
+//
+//int& func2()
+//{
+//	int x = 1;
+//	return x;
+//}
+//
+//Stack& Func3()
+//{
+//	Stack st;
+//	return st;
+//}
+//
+//// 10:30
+//int main()
+//{
+//	int ret1 = func2();
+//	cout << ret1 << endl;
+//
+//	Stack ret2 = Func3();
+//	// Stack ret2(Func3());
+//
+//	return 0;
+//}
