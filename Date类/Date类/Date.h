@@ -25,7 +25,7 @@ public:
 
 	// 拷贝构造函数
     // d2(d1)--this
-	Date(const Date& d);
+	//Date(const Date& d);
 
 	// 赋值运算符重载--其实也可以不写
     // d2 = d3 -> d2.operator=(&d2, d3)
@@ -44,7 +44,7 @@ public:
 	}
 
 	// 析构函数
-	~Date();
+	/*~Date();*/
 
 	// 日期+=天数
 	Date& operator+=(int day);
