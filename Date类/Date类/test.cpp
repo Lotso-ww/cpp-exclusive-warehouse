@@ -105,8 +105,19 @@ void test()
 	cout << days1 << '\n' << days2 << '\n';
 }
 
+void test1()
+{
+	Date d1(2024, 4, 14);
+	Date d2 = d1 + 30000;
+	// operator<<(cout, d1)
+	cout << d1;
+	cout << d2;
+	cin >> d1 >> d2;
+	cout << d1 << d2;
+}
 int main()
 {
-	test();
+	//test();
+	test1();
 	return 0;
-}////
+}

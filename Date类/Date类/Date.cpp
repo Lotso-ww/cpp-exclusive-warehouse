@@ -7,6 +7,11 @@ Date::Date(int year, int month, int day)
 	_year = year;
 	_month = month;
 	_day = day;
+
+	if (!CheckDate())
+	{
+		cout << "日期非法" << endl;
+	}
 }
 
 //// 拷贝构造函数--可以不写
@@ -237,7 +242,24 @@ int Date::operator-(const Date& d)
 	}
 	return n * ans;
 }
-
+//为了实现连续的返回类型要用ostream&
+//再就是out要占据左操作数提高可读性，所以实现成成员函数不好
+//直接实现成全局的，再在类里进行友元声明
+ostream& operator<<(ostream& out, const Date& d)
+{
+	out << d._year << "/" << d._month << "/" << d._day << '\n';
+	return out;
+}
+istream& operator>>(istream& in,  Date& d)
+{
+	cout << "请依次输入年月日:>";
+	in >> d._year >> d._month >> d._day;
+	if (!d.CheckDate())
+	{
+		cout << "日期非法" << endl;
+	}
+	return in;
+}
 
 //打印
 void Date::Print()

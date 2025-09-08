@@ -5,6 +5,9 @@ using namespace std;
 
 class Date
 {
+	//友元函数声明
+	friend ostream& operator<<(ostream& out, const Date& d);
+	friend istream& operator>>(istream& in,  Date& d);
 public:
 	// 获取某年某月的天数
 	int GetMonthDay(int year, int month)
@@ -17,6 +20,19 @@ public:
 		}
 		else {
 			return MonthDayArray[month];
+		}
+	}
+	//判断是否合法
+	bool CheckDate()
+	{
+		if (_month < 1 || _month > 12
+			|| _day < 1 || _day > GetMonthDay(_year, _month))
+		{
+			return false;
+		}
+		else
+		{
+			return true;
 		}
 	}
 
@@ -99,3 +115,6 @@ private:
 	int _month;
 	int _day;
 };
+
+ostream& operator<<(ostream& out, const Date& d);
+istream& operator>>(istream& in,  Date& d);
