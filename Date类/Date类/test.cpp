@@ -98,8 +98,8 @@ void test()
 /////////////////////////////////////////////////
 
 	// 日期-日期 返回天数
-	Date d1(2025, 8, 3);
-	Date d2(2025, 8, 5);
+	Date d1(2025, 10, 1);
+	Date d2(2025, 9, 17);
 	int days1 = d1 - d2;//-2
 	int days2 = d2 - d1;//2
 	cout << days1 << '\n' << days2 << '\n';
@@ -117,7 +117,7 @@ void test1()
 }
 int main()
 {
-	//test();
-	test1();
+	test();
+	//test1();
 	return 0;
 }
