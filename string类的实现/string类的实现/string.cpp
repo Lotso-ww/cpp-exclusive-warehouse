@@ -149,6 +149,12 @@ namespace Lotso
             //这样扩容比较好，每次插入的短就会2倍扩，多就会直接扩_size+len
             reserve(max(_size + len, 2 * _capacity));
         }
+        /*int end = _size;
+        while (end >= (int)pos)
+        {
+            _str[end + len] = _str[end];
+            --end;
+        }*/
         size_t end = _size + len;
         while (end > pos + len - 1)
         {
@@ -199,6 +205,7 @@ namespace Lotso
         assert(pos < _size);
 
         //大家也可以看看一个算法，我这里挂上链接
+        //https://www.bilibili.com/video/BV1UL411E7M8/?spm_id_from=333.1387.list.card_archive.click&vd_source=e76166931683eb6cd68b7efecd0cdfc0
         const char* ptr = strstr(_str + pos, str);
         if (ptr)
         {
@@ -250,6 +257,7 @@ namespace Lotso
         return !(*this == s);
     }
 
+    //流插入（输出）：将字符串内容写入输出流
     std::ostream& operator<<(std::ostream& out, const string& s)
     {
         for (auto ch : s)
@@ -260,9 +268,10 @@ namespace Lotso
         return out;
     }
 
+    //流提取（输入）：从输入流读取到空白字符为止
     std::istream& operator>>(std::istream& in, string& s)
     {
-        s.clear();
+        s.clear();//先清空原有内容
 
         char buff[256];
         int i = 0;
@@ -293,6 +302,7 @@ namespace Lotso
         return in;
     }
 
+    //整行读取：读取到指定分隔符（默认'\n'）为止
     std::istream& getline(std::istream& in, string& s, char delim)
     {
         s.clear();
@@ -326,3 +336,7 @@ namespace Lotso
         return in;
     }
 };
+
+
+
+

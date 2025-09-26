@@ -20,6 +20,20 @@ namespace Lotso
         string& operator=(const string& s);
         ~string();
 
+        size_t size()const
+        {
+            return _size;
+        }
+
+        size_t capacity()const
+        {
+            return _capacity;
+        }
+
+        void resize(size_t n, char c = '\0');
+
+        void reserve(size_t n);
+
      //////////////////////////////////////////////////////////////
 
         typedef char* iterator;
@@ -44,9 +58,23 @@ namespace Lotso
         {
             return _str + _size;
         }
+
+        // access
+
+        char& operator[](size_t index)
+        {
+            assert(index < _size);
+            return _str[index];
+        }
+
+        const char& operator[](size_t index)const
+        {
+            assert(index < _size);
+            return _str[index];
+        }
       /////////////////////////////////////////////////////////////
 
-            // modify
+        // modify
         void push_back(char ch);
         void append(const char* str);
         string& operator+=(char ch)
@@ -61,54 +89,18 @@ namespace Lotso
             return *this;
         }
 
-        void clear()
-        {
-            _str[0] = '\0';
-            _size = 0;
-        }
+        // 在pos位置上插入字符c/字符串str，并返回该字符的位置
+        void insert(size_t pos, char ch);
+        void insert(size_t pos, const char* str);
+
 
         void swap(string& s);
 
-        /////////////////////////////////////////////////////////////
-
-        // capacity
-
-        size_t size()const
-        {
-            return _size;
-        }
-
-        size_t capacity()const
-        {
-            return _capacity;
-        }
-
-        //bool empty()const;
-
-        void resize(size_t n, char c = '\0');
-
-        void reserve(size_t n);
+        //bool empty()const;    
 
         /////////////////////////////////////////////////////////////
 
-        // access
-
-            char& operator[](size_t index)
-            {
-                assert(index < _size);
-                return _str[index];
-            }
-
-            const char& operator[](size_t index)const
-            {
-                assert(index < _size);
-                return _str[index];
-            }
-
-        /////////////////////////////////////////////////////////////
-
-        //relational operators
-
+            //relational operators
             bool operator<(const string& s) const;
             bool operator<=(const string& s) const;
             bool operator>(const string& s) const;
@@ -116,25 +108,22 @@ namespace Lotso
             bool operator==(const string& s) const;
             bool operator!=(const string& s) const;
             
-        // 返回c在string中第一次出现的位置
+        // 返回ch在string中第一次出现的位置
+        size_t find(char ch, size_t pos = 0) const;
 
-        size_t find(char c, size_t pos = 0) const;
 
-        // 返回子串s在string中第一次出现的位置
-
-        size_t find(const char* s, size_t pos = 0) const;
-
-        // 在pos位置上插入字符c/字符串str，并返回该字符的位置
-
-        void insert(size_t pos, char ch);
-        //string& insert(size_t pos, char c);
-        //string& insert(size_t pos, const char* str);
-        void insert(size_t pos, const char* str);
+        // 返回子串str在string中第一次出现的位置
+        size_t find(const char* str, size_t pos = 0) const;
 
 
         // 删除pos位置上的元素，并返回该元素的下一个位置
+        void erase(size_t pos = 0, size_t len = npos);
 
-        void erase(size_t pos=0, size_t len=npos);
+        void clear()
+        {
+            _str[0] = '\0';
+            _size = 0;
+        }
 
         string substr(size_t pos=0, size_t len=npos);
 
