@@ -117,6 +117,7 @@ namespace Lotso
 			assert(pos >= _start);
 			assert(pos <= _finish);
 
+			// 扩容可能导致 pos 失效，需记录偏移量
 			if (_finish == _end_of_storage)
 			{
 				//提前记录一下
@@ -156,6 +157,5 @@ namespace Lotso
 		iterator _start;
 		iterator _finish;
 		iterator _end_of_storage;
-
 	};
 }
