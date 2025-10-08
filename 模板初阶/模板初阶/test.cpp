@@ -189,8 +189,7 @@
 //	Stack<int> st1;  // 存int
 //	Stack<double> st2;  // 存double
 //
-//	return 0;
-//}
+//	return 0;///
 
  //泛型编程
  //模板不支持声明和定义分离定义.h 和 .cpp
