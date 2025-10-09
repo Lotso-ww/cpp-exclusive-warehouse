@@ -132,14 +132,107 @@ namespace Lotso
 		}
 		cout << endl;
 	}
+	void test_vector5()
+	{
+		Lotso::vector<int> v;
+		v.push_back(1);
+		v.push_back(2);
+		v.push_back(2);
+		v.push_back(3);
+		v.push_back(4);
+		v.push_back(5);
+		v.push_back(6);
+		for (auto e : v)
+		{
+			cout << e << " ";
+		}
+		cout << endl;
+
+		v.resize(3);
+		for (auto e : v)
+		{
+			cout << e << " ";
+		}
+		cout << endl;
+
+		// v.resize(20);
+		v.resize(20, 5);
+		for (auto e : v)
+		{
+			cout << e << " ";
+		}
+		cout << endl;
+	}
+
+	void test_vector6()
+	{
+		Lotso::vector<int> v1;
+		v1.push_back(1);
+		v1.push_back(2);
+		v1.push_back(2);
+		v1.push_back(3);
+		v1.push_back(4);
+		v1.push_back(5);
+		v1.push_back(6);
+		for (auto e : v1)
+		{
+			cout << e << " ";
+		}
+		cout << endl;
+
+		Lotso::vector<int> v2(v1);
+
+		for (auto e : v2)
+		{
+			cout << e << " ";
+		}
+		cout << endl;
+
+		// Lotso::vector<int> v3({ 10,20,30,40 });
+		Lotso::vector<int> v3 = { 10,20,30,40 };
+		v1 = v3;
+		for (auto e : v1)
+		{
+			cout << e << " ";
+		}
+		cout << endl;
+
+		//Lotso::vector<int> v4(10u, 1);
+		Lotso::vector<int> v4(10, 1);
+		for (auto e : v4)
+		{
+			cout << e << " ";
+		}
+		cout << endl;
+
+		Lotso::vector<char> v5(10, 'x');
+	}
+
+	void test_vector7()
+	{
+		Lotso::vector<string> v1;
+		v1.push_back("111111111111111111111111");
+		v1.push_back("111111111111111111111111");
+		v1.push_back("111111111111111111111111");
+		v1.push_back("111111111111111111111111");
+		v1.push_back("111111111111111111111111");
+		for (auto& e : v1)
+		{
+			cout << e << " ";
+		}
+		cout << endl;
+	}
 }
 
 int main()
 {
-	Lotso::test_vector1();
-	//Lotso::test_vector2();
-	//Lotso::test_vector3();
-	//Lotso::test_vector4();
+	/*Lotso::test_vector1();
+	Lotso::test_vector2();
+	Lotso::test_vector3();
+	Lotso::test_vector4();*/
+	//Lotso::test_vector5();
+	//Lotso::test_vector6();
+	//Lotso::test_vector7();
 
 	return 0;
 }
