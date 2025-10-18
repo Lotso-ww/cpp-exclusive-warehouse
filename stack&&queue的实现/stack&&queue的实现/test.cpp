@@ -1,5 +1,6 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS 1
 #include<iostream>
+#include<list>
 #include<algorithm>
 using namespace std;
 
@@ -139,51 +140,30 @@ using namespace std;
 
 //********************************************************************************************
 
-// 仿函数/函数对象   对象可以像函数一样使用
-template <class T> 
-struct Less
-{
-	bool operator() (const T& x, const T& y) const { return x < y; }
-};
-#include<queue>
-int main()
-{
-	//priority_queue<int> pq;//默认是大的优先级高(大堆)
-	priority_queue<int,vector<int>,greater<int>> pq;//调整成默认是小的优先级高(小堆)
-	pq.push(3);
-	pq.push(1);
-	pq.push(2);
-	pq.push(4);
-	pq.push(6);
-
-	while (!pq.empty())
-	{
-		cout << pq.top() << " ";
-		pq.pop();
-	}
-
-	return 0;
-}
-
-//**********************************************************************************
-//priority_queue,实现部分测试
-//#include "priority_queue.h"
-//
+//// 仿函数/函数对象   对象可以像函数一样使用
+//template <class T> 
+//struct Less
+//{
+//	bool operator() (const T& x, const T& y) const { return x < y; }
+//};
+//#include<queue>
 //int main()
 //{
-//	//Lotso::priority_queue<int> pq;
-//	int a[] = { 30,4,2,66,3 };
-//	Lotso::priority_queue<int> pq(a, a + 5);
+//	//priority_queue<int> pq;//默认是大的优先级高(大堆)
+//	priority_queue<int,vector<int>,greater<int>> pq;//调整成默认是小的优先级高(小堆)
 //	pq.push(3);
 //	pq.push(1);
-//	pq.push(5);
-//	pq.push(7);
 //	pq.push(2);
+//	pq.push(4);
+//	pq.push(6);
 //
 //	while (!pq.empty())
 //	{
 //		cout << pq.top() << " ";
 //		pq.pop();
 //	}
-//	cout << endl;
+//
+//	return 0;
 //}
+
+//**********************************************************************************
