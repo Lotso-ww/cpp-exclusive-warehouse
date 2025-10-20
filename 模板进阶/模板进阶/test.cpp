@@ -196,110 +196,110 @@ using namespace std;
 
 ////类模板的特化
 
-// 通用类模板（两个类型参数）
-template<class T1, class T2>
-class Data
-{
-public:
-	Data() { cout << "Data<T1,T2>" << endl; }
-private:
-	T1 _d1;
-	T2 _d2;
-};
-//
-////类模板的特化，对内部成员没有要求，也就是说原模板定义的，特化版本可以不定义，也可以新增
-////全特化
-//template<>
-//class Data<int,double>
+//// 通用类模板（两个类型参数）
+//template<class T1, class T2>
+//class Data
 //{
 //public:
-//	Data() { cout << "Data<int,double> 全特化" << endl; }
-//	void func() {}
+//	Data() { cout << "Data<T1,T2>" << endl; }
+//private:
+//	T1 _d1;
+//	T2 _d2;
+//};
+////
+//////类模板的特化，对内部成员没有要求，也就是说原模板定义的，特化版本可以不定义，也可以新增
+//////全特化
+////template<>
+////class Data<int,double>
+////{
+////public:
+////	Data() { cout << "Data<int,double> 全特化" << endl; }
+////	void func() {}
+////};
+////
+//////偏特化/半特化
+//////部分特化
+////template<class T1>
+////class Data<T1, double>
+////{
+////public:
+////	Data(){ cout << "Data<T1,double> 偏特化" << endl; }
+////};
+//
+////偏特化
+////参数更进一步限制
+////两个参数偏特化为指针类型
+//template<class T1, class T2>
+//class Data<T1*, T2*>
+//{
+//public:
+//	Data() { cout << "Data<T1*,T2*> 偏特化--参数更进一步限制" << endl; }
+//	void func()
+//	{
+//		cout << typeid(T1).name() << endl;//T1
+//		cout << typeid(T2).name() << endl;//T2
+//	}
 //};
 //
-////偏特化/半特化
-////部分特化
+////两个参数偏特化为引用类型
+//template<class T1, class T2>
+//class Data<T1&, T2&>
+//{
+//public:
+//	Data() { cout << "Data<T1&,T2&> 偏特化--参数更进一步限制" << endl; }
+//	void func()
+//	{
+//		cout << typeid(T1).name() << endl;//T1
+//		cout << typeid(T2).name() << endl;//T2
+//	}
+//};
+//
 //template<class T1>
-//class Data<T1, double>
+//class Data<T1*, int>
 //{
 //public:
-//	Data(){ cout << "Data<T1,double> 偏特化" << endl; }
+//	Data() { cout << "Data<T1*,int> 偏特化--参数更进一步限制" << endl; }
+//	void func()
+//	{
+//		cout << typeid(T1).name() << endl;//T1
+//	}
 //};
-
-//偏特化
-//参数更进一步限制
-//两个参数偏特化为指针类型
-template<class T1, class T2>
-class Data<T1*, T2*>
-{
-public:
-	Data() { cout << "Data<T1*,T2*> 偏特化--参数更进一步限制" << endl; }
-	void func()
-	{
-		cout << typeid(T1).name() << endl;//T1
-		cout << typeid(T2).name() << endl;//T2
-	}
-};
-
-//两个参数偏特化为引用类型
-template<class T1, class T2>
-class Data<T1&, T2&>
-{
-public:
-	Data() { cout << "Data<T1&,T2&> 偏特化--参数更进一步限制" << endl; }
-	void func()
-	{
-		cout << typeid(T1).name() << endl;//T1
-		cout << typeid(T2).name() << endl;//T2
-	}
-};
-
-template<class T1>
-class Data<T1*, int>
-{
-public:
-	Data() { cout << "Data<T1*,int> 偏特化--参数更进一步限制" << endl; }
-	void func()
-	{
-		cout << typeid(T1).name() << endl;//T1
-	}
-};
+////
+//int main()
+//{
+//	Data<int, int> d1;
+//	//d1.func();//d1不行，因为没有
+//	cout << endl;
 //
-int main()
-{
-	Data<int, int> d1;
-	//d1.func();//d1不行，因为没有
-	cout << endl;
-
-	//Data<int, double> d2;
-	//d2.func();//d2新增的可以使用
-	//cout << endl;
-
-
-	//Data<char, double> d3;
-	//cout << endl;
-
-
-	Data<char*, double*> d4;
-	d4.func();
-	cout << endl;
-
-
-	Data<char&, double&> d5;
-	d5.func();
-	cout << endl;
-
-
-	Data<char*, int> d6;
-	d6.func();
-	cout << endl;
+//	//Data<int, double> d2;
+//	//d2.func();//d2新增的可以使用
+//	//cout << endl;
+//
+//
+//	//Data<char, double> d3;
+//	//cout << endl;
+//
+//
+//	Data<char*, double*> d4;
+//	d4.func();
+//	cout << endl;
+//
+//
+//	Data<char&, double&> d5;
+//	d5.func();
+//	cout << endl;
+//
+//
+//	Data<char*, int> d6;
+//	d6.func();
+//	cout << endl;
+//
+//
+//	return 0;
+//}
 
 
-	return 0;
-}
-
-
-//特化版本
+////特化版本
 //template <>
 //struct less<Date*>
 //{
