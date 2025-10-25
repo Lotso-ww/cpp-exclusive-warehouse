@@ -31,7 +31,7 @@ using namespace std;
 
 
 
-////实现⼀个不能被继承的类
+////实现⼀个不能被继承的类//
 //// 方法2：C++11：新增了⼀个final关键字，final修改基类，派⽣类就不能继承了。
 //class Base final
 //{
