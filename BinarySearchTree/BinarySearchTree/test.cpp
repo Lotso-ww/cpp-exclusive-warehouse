@@ -10,26 +10,25 @@ int main()
 	}
 
 	t.InOrder();
-
-	t.Erase(3);
-	t.Erase(8);
-	t.InOrder();
-
-	t.Erase(1);
-	t.InOrder();
-
-	t.Erase(10);
-	t.InOrder();
-
-	for (auto& e : a)
-	{
-		t.Erase(e);
-	}
-
-	return 0;
+//
+//	t.Erase(3);
+//	t.Erase(8);
+//	t.InOrder();
+//
+//	t.Erase(1);
+//	t.InOrder();
+//
+//	t.Erase(10);
+//	t.InOrder();
+//
+//	for (auto& e : a)
+//	{
+//		t.Erase(e);
+//	}
+//
 }
 
 //int main()
 //{
 //
-//}
+//}	return 0;
