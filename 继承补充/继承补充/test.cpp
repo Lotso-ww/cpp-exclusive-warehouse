@@ -3,57 +3,7 @@
 #include<vector>
 using namespace std;
 
-
-////实现⼀个不能被继承的类
-//// 方法1：C++98
-//class Base 
-//{
-//public:
-//	void func5() { cout << "Base::func5" << endl; }
-//protected:
-//	int a = 1;
-//private:
-//	//C++98的方法：构造函数私有的类不能被继承
-//	Base()
-//	{}
-//};
-//
-//class Derive : Base
-//{};
-//
-//int main()
-//{
-//	//Base b;
-//	//Derive d;
-//
-//	return 0;
-//}
-
-
-
-////实现⼀个不能被继承的类
-//// 方法2：C++11：新增了⼀个final关键字，final修改基类，派⽣类就不能继承了。
-//class Base final
-//{
-//public:
-//	void func5() { cout << "Base::func5" << endl; }
-//protected:
-//	int a = 1;
-//};
-//
-//class Derive : Base
-//{
-//};
-//
-//int main()
-//{
-//	//Base b;
-//	//Derive d;
-//
-//	return 0;
-//}
-
-
+//// 前置声明：告诉编译器Student类存在
 //class Student;
 //
 //class Person
@@ -75,8 +25,8 @@ using namespace std;
 //
 //void Display(const Person& p, const Student& s)
 //{
-//	cout << p._name << endl;
-//	cout << s._stuNum << endl;
+//	cout << p._name << endl;//访问基类成员
+//	cout << s._stuNum << endl;//访问派生类成员
 //}
 //
 //int main()
@@ -91,7 +41,7 @@ using namespace std;
 //	return 0;
 //}
 
-//
+
 //class Person
 //{
 //public:
@@ -123,7 +73,7 @@ using namespace std;
 //	cout << &s._count << endl;
 //	cout << endl;
 //	
-//	// 公有的情况下，父派生类指定类域都可以访问静态成员
+//	// 公有的情况下，父类派生类指定类域都可以访问静态成员
 //	cout << Person::_count << endl;
 //	cout << Student::_count << endl;
 //	cout << endl;
@@ -131,8 +81,38 @@ using namespace std;
 //	return 0;
 //}
 
+//菱形继承
+//// 顶层基类
+//class Person {
+//public:
+//    string _name;  // 会被继承两次
+//};
+//
+//// 中间基类1
+//class Student : public Person {};
+//
+//// 中间基类2
+//class Teacher : public Person {};
+//
+//// 最终派生类（菱形继承）
+//class Assistant : public Student, public Teacher {};
+//
+//int main() {
+//    Assistant a;
+//    // a._name = "张三";  
+//    // 编译报错：二义性（Student::_name还是Teacher::_name？）
+//    // 只能显式指定，但数据冗余仍存在，没有解决
+//    a.Student::_name = "李四";
+//    a.Teacher::_name = "王五";
+//    cout << a.Student::_name << endl;  // 输出李四
+//    cout << a.Teacher::_name << endl;  // 输出王五
+//    return 0;
+//}
+//#include <iostream>
+//#include <string>
+//using namespace std;
 
-////菱形继承,虚继承等
+////顶层基类
 //class Person
 //{
 //public:
@@ -146,37 +126,39 @@ using namespace std;
 //	string _address;*/
 //};
 //
-////class Student : public Person
-////virtual，谁导致的就在继承时加
+//// 中间基类1：虚继承Person（添加virtual）
+////virtual，谁导致的就在继承谁时加
 //class Student : virtual public Person
 //{
 //public:
 //	Student(const char* name, int num)
-//		:Person(name)
+//		:Person(name)// 虚继承下，中间基类暂时不初始化顶层基类
 //		, _num(num)
 //	{}
 //protected:
 //	int _num; //学号
 //};
 //
-////class Teacher : public Person
-////virtual，谁导致的就在继承时加
+//// 中间基2：虚继承Person（添加virtual）
+////virtual，谁导致的就在继承谁时加
 //class Teacher : virtual public Person
 //{
 //public:
 //	Teacher(const char* name, int id)
-//		:Person(name)
+//		:Person(name)// 虚继承下，中间基类暂时不初始化顶层基类
 //		, _id(id)
 //	{}
 //protected:
 //	int _id; // 职工编号
 //};
 //
+//// 最终派生类：菱形继承（Person成员仅一份）
 //class Assistant : public Student, public Teacher
 //{
 //public:
+//  // 关键：虚继承下，顶层基类的构造由最终派生类显式调用
 //	Assistant(const char* name1, const char* name2, const char* name3)
-//		:Person(name1)
+//		:Person(name1)// 直接初始化顶层基类
 //		,Student(name2, 1)
 //		,Teacher(name3, 2)
 //		, _majorCourse("计算机")
@@ -188,23 +170,10 @@ using namespace std;
 //
 //int main()
 //{
-//
-//	//这里菱形继承会有一些问题，数据冗余以及二义性
-//	// 编译报错：error C2385: 对“_name”的访问不明确
-//	//Assistant a;
-//	//a._name = "peter";
-//
-//	//可以指定着这样写，要么就使用虚继承
-//	//a.Student::_name = "xxxx";
-//	//a.Teacher::_name = "yyyy";
-//
 //	// 思考一下这里a对象中_name是"张三", "李四", "王五"中的哪一个？
 //	Assistant a("张三", "李四", "王五");
 //	//上面有三次Person(name)，但其实就只有在Assistant里一次，其它两次会跳过。
 //	//所以是张三
-//	cout  << endl;
-//
-//
 //	return 0;
 //}
 
@@ -225,25 +194,58 @@ using namespace std;
 //}
 
 ////IO库中的菱形虚拟继承
-//template<class CharT, class Traits = std::char_traits<CharT>>
-//class basic_ostream : virtual public std::basic_ios<CharT, Traits>
-//{
-//};
-//
-//template<class CharT, class Traits = std::char_traits<CharT>>
-//class basic_istream : virtual public std::basic_ios<CharT, Traits>
-//{
-//};
-// 
+template<class CharT, class Traits = std::char_traits<CharT>>
+class basic_ostream : virtual public std::basic_ios<CharT, Traits>
+{
+};
 
-//// 继承：is-a,白盒，耦合度高
-//class stack :public vector
-//{
-//
-//};
-////组合 has-a，黑盒，耦合度低
-//class stack
-//{
-//	vector _v;
-//};
+template<class CharT, class Traits = std::char_traits<CharT>>
+class basic_istream : virtual public std::basic_ios<CharT, Traits>
+{
+};
+
+
+// Tire(轮胎)和Car(⻋)更符合has-a的关系
+class Tire {
+protected:
+	string _brand = "Michelin"; // 品牌
+	size_t _size = 17; // 尺⼨
+};
+class Car {
+protected:
+	string _colour = "白色"; // 颜色
+	string _num = "陕ABIT00"; // ⻋牌号
+	Tire _t1; // 轮胎
+	Tire _t2; // 轮胎
+	Tire _t3; // 轮胎
+	Tire _t4; // 轮胎
+};
+
+
+// Car和BMW/Benz更符合is-a的关系
+class BMW : public Car {
+public:
+	void Drive() { cout << "好开-操控" << endl; }
+};
+
+class Benz : public Car {
+public:
+	void Drive() { cout << "好坐-舒适" << endl; }
+};
+
+
+// stack和vector的关系，既符合is-a，也符合has-a
+template<class T>
+class vector
+{};
+// 继承：is-a,白盒，耦合度高
+template<class T>
+class stack :public vector<T>
+{};
+//组合 has-a，黑盒，耦合度低
+template<class T>
+class stack
+{
+	vector<T> _v;
+};
 //能多用组合就用组合
