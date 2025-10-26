@@ -3,7 +3,61 @@
 #include<vector>
 using namespace std;
 
+<<<<<<< HEAD
 //// 前置声明：告诉编译器Student类存在
+=======
+
+////实现⼀个不能被继承的类
+//// 方法1：C++98
+//class Base 
+//{
+//public:
+//	void func5() { cout << "Base::func5" << endl; }
+//protected:
+//	int a = 1;
+//private:
+//	//C++98的方法：构造函数私有的类不能被继承
+//	Base()
+//	{}
+//};
+//
+//class Derive : Base
+//{};
+//
+//int main()
+//{
+//	//Base b;
+//	//Derive d;
+//
+//	return 0;
+//}
+
+
+
+////实现⼀个不能被继承的类//
+//// 方法2：C++11：新增了⼀个final关键字，final修改基类，派⽣类就不能继承了。
+//class Base final
+//{
+//public:
+//	void func5() { cout << "Base::func5" << endl; }
+//protected:
+//	int a = 1;
+//};
+//
+//class Derive : Base
+//{
+//};
+//
+//int main()
+//{
+//	//Base b;
+//	//Derive d;
+//
+//	return 0;
+//}
+
+
+>>>>>>> 9a50878a5b4b4012c36637143e69e6ae11178c51
 //class Student;
 //
 //class Person
