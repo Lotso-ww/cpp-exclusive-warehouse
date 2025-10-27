@@ -382,20 +382,6 @@ namespace key_value
 }
 
 
-	template<class K>
-	struct BSTreeNode
-	{
-		BSTreeNode<K>* _left;  // 左子树指针
-		BSTreeNode<K>* _right; // 右子树指针
-		K _key;                // 节点键值
 
-		// 构造函数：初始化指针为空，键值为传入值
-		BSTreeNode(const K& key)
-			: _left(nullptr)
-			, _right(nullptr)
-			, _key(key)
-		{
-		}
-	};
 
 
