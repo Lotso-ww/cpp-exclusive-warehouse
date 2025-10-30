@@ -142,10 +142,10 @@ void test_multiset()
 	cout << endl;
 }
 
-int main()
-{
-	//test_set1();
-	//test_set2();
-	//test_set3();
-	test_multiset();
-}
+//int main()
+//{
+//	//test_set1();
+//	//test_set2();
+//	//test_set3();
+//	test_multiset();
+//}
