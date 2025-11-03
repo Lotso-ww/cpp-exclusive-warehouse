@@ -29,13 +29,17 @@ class ALVTree
 {
 	typedef ALVTreeNode<K, V> Node;
 public:
+	
 	bool Insert(const pair<K, V>& kv)
 	{
+		// 树为空，直接创建根节点
 		if (_root == nullptr)
 		{
 			_root = new Node(kv);
 			return true;
 		}
+
+		// 树非空，按BST规则找插入位置
 		Node* parent = nullptr;
 		Node* cur = _root;
 		while (cur)
