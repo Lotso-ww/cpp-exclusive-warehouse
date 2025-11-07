@@ -78,14 +78,11 @@ public:
 		}
 		cur->_parent = parent;
 
-		while (parent->_col == Red)
+		while (parent && parent->_col == Red)
 		{
 			Node* grandparent = parent->_parent;
 			if (grandparent->_left == parent)
 			{
-				//   g
-				// p   u
-				//c
 				Node* uncle = grandparent->_right;
 				// uncle存在且为红色
 				if (uncle && uncle->_col == Red)
@@ -93,6 +90,7 @@ public:
 					// 变色+继续向上处理
 					parent->_col = Black;
 					uncle->_col = Black;
+					grandparent->_col = Red;
 
 					cur = grandparent;
 					parent = cur->_parent;
@@ -110,11 +108,65 @@ public:
 					}
 					else // 双旋+变色
 					{
+						//   g
+						// p   u
+						//  c
+						RotateL(parent);
+						RotateR(grandparent);
 
+						cur->_col = Black;
+						grandparent->_col = Red;
 					}
+					break;
+				}
+			}
+
+			else
+			{
+				Node* uncle = grandparent->_left;
+				if (uncle && uncle->_col == Red)
+				{
+					// 变色+继续向上处理
+					uncle->_col = Black;
+					parent->_col = Black;
+					grandparent->_col = Red;
+
+					cur = grandparent;
+					parent = cur->_parent;
+				}
+				else
+				{
+					if (parent->_right == cur) // 单旋+变色
+					{
+						//   g
+						// u   p
+						//      c
+						RotateL(grandparent);
+
+						parent->_col = Black;
+						grandparent->_col = Red;
+					}
+					else // 双旋+变色
+					{
+						//   g
+						// u   p
+						//   c
+
+						RotateR(parent);
+						RotateL(grandparent);
+
+						cur->_col = Black;
+						grandparent->_col = Red;
+					}
+
+					break;
 				}
 			}
 		}
+		// 确保根节点始终为黑色（防止回溯时根被设为红色）
+		_root->_col = Black;
+
+		return true;
 	}
 private:
 	void RotateR(Node* parent)
@@ -173,25 +225,120 @@ private:
 			subR->_parent = grandparent;
 		}
 	}
+public:
+	bool IsBalanceTree()
+	{
+		if (_root && _root->_col == Red)
+			return false;
 
-	//void RotateLR(Node* parent)
-	//{
-	//	Node* subL = parent->_left;
-	//	Node* subLR = subL->_right;
+		// 最左路径黑色节点的数量做参考值去比较其它路径
+		int left_bn = 0;
+		Node* cur = _root;
+		while (cur)
+		{
+			if (cur->_col == Black)
+				left_bn++;
 
-	//	RotateL(subL);
-	//	RotateR(parent);
+			cur = cur->_left;
+		}
 
-	//}
+		return _Checkcolour(_root, 0, left_bn);
+	}
+	void InOrder()
+	{
+		_InOrder(_root);
+		cout << endl;
+	}
 
-	//void RotateRL(Node* parent)
-	//{
-	//	Node* subR = parent->_right;
-	//	Node* subRL = subR->_left;
-	//	
-	//	RotateR(subR);
-	//	RotateL(parent);
-	//}
+	Node* Find(const K& key)
+	{
+		Node* cur = _root;
+		while (cur)
+		{
+			if (cur->_kv.first < key)
+			{
+				cur = cur->_right;
+			}
+			else if (cur->_kv.first > key)
+			{
+				cur = cur->_left;
+			}
+			else
+			{
+				return cur;
+			}
+		}
+
+		return nullptr;
+	}
+	int Height()
+	{
+		return _Height(_root);
+	}
+
+	int Size()
+	{
+		return _Size(_root);
+	}
+private:
+	int _Size(Node* root)
+	{
+		if (root == nullptr)
+			return 0;
+
+		return _Size(root->_left) + _Size(root->_right) + 1;
+	}
+
+	int _Height(Node* root)
+	{
+		if (root == nullptr)
+			return 0;
+		int leftHeight = _Height(root->_left);
+		int rightHeight = _Height(root->_right);
+		return leftHeight > rightHeight ? leftHeight + 1 : rightHeight + 1;
+	}
+	void _InOrder(Node* root)
+	{
+		if (root == nullptr)
+			return;
+
+		_InOrder(root->_left);
+		//cout << root->_kv.first << ":" << root->_kv.second << endl;
+		cout << root->_kv.first << " ";
+		_InOrder(root->_right);
+	}
+
+	// root_cur_bn 根到当前节点路径上黑色节点的数量
+	// 前序递归
+	bool _Checkcolour(Node* root, int root_cur_bn, const int left_bn)
+	{
+		if (root == nullptr)
+		{
+			// 检查每条路径的黑色节点数量
+			if (root_cur_bn != left_bn)
+			{
+				cout << "黑色节点的数量不相等" << endl;
+				return false;
+			}
+
+			return true;
+		}
+
+		if (root->_col == Black)
+		{
+			root_cur_bn++;
+		}
+
+		// 检查连续的红色节点
+		if (root->_col == Red && root->_parent && root->_parent->_col == Red)
+		{
+			cout << root->_kv.first << "存在连续红色节点" << endl;
+			return false;
+		}
+
+		return _Checkcolour(root->_left, root_cur_bn, left_bn)
+		 && _Checkcolour(root->_right, root_cur_bn, left_bn);
+	}
 private:
 	Node* _root = nullptr;
 };
