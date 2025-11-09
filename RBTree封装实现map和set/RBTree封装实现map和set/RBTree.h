@@ -376,7 +376,7 @@ public:
 	void InOrder()
 	{
 		_InOrder(_root);
-		cout << endl;
+		cout << endl;//
 	}
 
 	int Height()
