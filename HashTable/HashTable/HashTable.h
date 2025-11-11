@@ -4,13 +4,15 @@
 #include<algorithm>
 using namespace std;
 
+// 状态标识
 enum State
 {
-	EMPTY,
-	EXIST,
-	DELETE
+	EMPTY, // 空位置 
+	EXIST, // 已存储元素
+	DELETE // 已删除元素
 };
 
+// 质数表(SGI STL 同款，用于扩容)
 static const int __stl_num_primes = 28;
 static const unsigned long __stl_prime_list[__stl_num_primes] =
 {
@@ -21,7 +23,6 @@ static const unsigned long __stl_prime_list[__stl_num_primes] =
   50331653,   100663319,  201326611, 402653189, 805306457,
   1610612741, 3221225473, 4294967291
 };
-
 inline unsigned long __stl_next_prime(unsigned long n)
 {
 	const unsigned long* first = __stl_prime_list;
@@ -32,55 +33,66 @@ inline unsigned long __stl_next_prime(unsigned long n)
 }
 
 
+// 哈希表结点结构
 template<class K,class V>
 struct HashData
 {
-	pair<K, V> _kv;
-	State _state = EMPTY;
+	pair<K, V> _kv; // 存储key-value对
+	State _state = EMPTY; //初始状态为空
 };
 
+
+// 哈希函数仿函数
 template<class K>
 struct HashFunc
 {
 	size_t operator()(const K& key)
 	{
-		return (size_t)key;
+		return (size_t)key;// 默认直接转换
 	}
 };
-// 特化
+// 特化string类型的哈希函数
 template<>
 struct HashFunc<string>
 {
+	// BKDR字符串哈希算法
 	size_t operator()(const string& key)
 	{
 		size_t hash = 0;
 		for (auto ch : key)
 		{
-			hash += ch;
-			hash *= 131;
+			hash += ch;// 累加字符ASCII码
+			hash *= 131;// 乘质数131，减少冲突
 		}
 		return hash;
 	}
 };
+
+
+// 开放定址法哈希表(线性探测)
 template<class K,class V,class Hash = HashFunc<K>>
 class HashTable
 {
 public:
 
+	// 构造函数(初始化哈希表大小为第一个质数)
 	HashTable()
 		:_tables(__stl_next_prime(1))
 	{}
 
+	// 插入 key-value对(去重)
 	bool Insert(const pair<K, V>& kv)
 	{
+		// 1.先查找，避免重复插入
 		if (Find(kv.first))
 			return false;
 
-		// 负载因子 >=0.7 扩容
+		// 2.负载因子 >=0.7，扩容
 		if ((double)_n / (double)_tables.size() >= 0.7)
 		{
 			HashTable<K, V, Hash> newht;
 			newht._tables.resize(__stl_next_prime(_tables.size() + 1));
+			// 3.迁移旧表元素到新表
 			for (size_t i = 0; i < _tables.size(); i++)
 			{
 				// 遍历旧表，旧表数据插入到newht
@@ -90,9 +102,11 @@ public:
 				}
 			}
 
+			// 4.交换新旧表
 			_tables.swap(newht._tables);
 		}
 
+		// 5.线性探测找空闲位置
 		Hash hs;
 		size_t hash0 = hs(kv.first) % _tables.size();
 		// 线性探测
@@ -100,10 +114,12 @@ public:
 		size_t hashi = hash0;
 		while (_tables[hashi]._state == EXIST)
 		{
+			// 冲突，线性探测下一个位置
 			hashi = (hash0 + i) % _tables.size();
 			++i;
 		}
 
+		// 6.插入元素
 		_tables[hashi]._kv = kv;
 		_tables[hashi]._state = EXIST;
 		++_n;
@@ -111,6 +127,7 @@ public:
 		return true;
 	}
 
+	// 查找key，返回节点指针(nullptr表示未找到)
 	HashData<K, V>* Find(const K& key)
 	{
 		Hash hs;
@@ -118,6 +135,7 @@ public:
 		// 线性探测
 		size_t i = 1;
 		size_t hashi = hash0;
+		// 遇到EMPTY才停止查找(DELETE继续探测)
 		while (_tables[hashi]._state != EMPTY)
 		{
 			if (_tables[hashi]._state != DELETE
@@ -125,6 +143,7 @@ public:
 			{
 				return &_tables[hashi];
 			}
+			// 线性探测下一个位置
 			hashi = (hash0 + i) % _tables.size();
 			++i;
 		}
@@ -132,11 +151,13 @@ public:
 		return nullptr;
 	}
 
+	// 删除key(仅修改状态为DELETE,不实际删除元素)
 	bool Erase(const K& key)
 	{
 		HashData<K, V>* ret = Find(key);
 		if (ret)
 		{
+			// 标记为 DELETE,避免影响后续查找
 			ret->_state = DELETE;
 			--_n;
 			return true;
@@ -147,24 +168,7 @@ public:
 		}
 	}
 private:
-	// 内部接口：仅用于扩容迁移，不检查负载因子，不扩容
-	void _InsertForExpand(const pair<K, V>& kv)
-	{
-		Hash hs;
-		size_t hash0 = hs(kv.first) % _tables.size();
-		size_t i = 1;
-		size_t hashi = hash0;
-		while (_tables[hashi]._state == EXIST)
-		{
-			hashi = (hash0 + i) % _tables.size();
-			++i;
-		}
-		_tables[hashi]._kv = kv;
-		_tables[hashi]._state = EXIST;
-		++_n;
-	}
-private:
-	std::vector<HashData<K,V>> _tables;
+	std::vector<HashData<K,V>> _tables; // 哈希表数组
 
-	size_t _n = 0;// 存储的数据个数
+	size_t _n = 0;// 已存储的数据个数
 };

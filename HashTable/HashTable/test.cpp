@@ -18,11 +18,13 @@ void TestHT1()
 	ht.Insert({ -2, 2 });
 	ht.Insert({ 22, 22 });
 
+	cout << "删除5之前查找5,58结果：" << endl;
 	cout << ht.Find(5) << endl;
 	cout << ht.Find(58) << endl;
 
 	ht.Erase(5);
 
+	cout << "删除5之后查找5,58结果：" << endl;
 	cout << ht.Find(5) << endl;
 	cout << ht.Find(58) << endl;
 
@@ -76,7 +78,11 @@ void TestHT2()
 
 int main()
 {
+	cout << "测试一:删除5后再查找" << endl;
 	TestHT1();
+	cout << endl;
+	cout << "测试二:测试string类型" << endl;
+	TestHT2();
 
 	return 0;
 }
