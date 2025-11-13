@@ -172,3 +172,143 @@ private:
 
 	size_t _n = 0;// 已存储的数据个数
 };
+
+namespace hash_bucket
+{
+	template<class K, class V>
+	struct HashNode
+	{
+		pair<K, V> _kv;
+		HashNode<K,V>* _next;
+
+		HashNode(const pair<K,V>& kv)
+			:_kv(kv)
+			,_next(nullptr)
+		{}
+	};
+
+	template<class K,class V, class Hash = HashFunc<K>>
+	class HashTable
+	{
+		typedef HashNode<K, V> Node;
+	public:
+		HashTable()
+			:_tables(__stl_next_prime(1),nullptr)
+			,_n(0)
+		{}
+
+		~HashTable()
+		{
+			for (size_t i = 0; i < _tables.size(); i++)
+			{
+				Node* cur = _tables[i];
+				while (cur)
+				{
+					Node* next = cur->_next;
+					delete cur;
+					cur = next;
+				}
+				_tables[i] = nullptr;
+			}
+			_n = 0;
+		}
+		bool Insert(const pair<K,V>& kv)
+		{
+			// 先查找，避免重复插入
+			if (Find(kv.first))
+				return false;
+
+			Hash hs;
+
+			// 负载因子 == 1 就开始扩容
+			if (_n == _tables.size())
+			{
+				std::vector<Node*> newtables(__stl_next_prime(_tables.size() + 1), nullptr);
+				for (size_t i = 0; i < _tables.size(); i++)
+				{
+					// 遍历旧表，旧表节点重新映射，挪动到新表
+					Node* cur = _tables[i];
+					while (cur)
+					{
+						Node* next = cur->_next;
+
+						// 头插
+						size_t hashi = hs(cur->_kv.first) % newtables.size();
+						cur->_next = newtables[hashi];
+						newtables[hashi] = cur;
+
+						cur = next;
+					}
+
+					_tables[i] = nullptr;
+				}
+				_tables.swap(newtables);
+			}
+
+			size_t hashi = hs(kv.first) % _tables.size();
+
+			// 头插
+			Node* newnode = new Node(kv);
+			newnode->_next = _tables[hashi];
+			_tables[hashi] = newnode;
+
+			++_n;
+			return true;
+		}
+
+		Node* Find(const K& key)
+		{
+			Hash hs;
+			size_t hashi = hs(key) % _tables.size();
+			Node* cur = _tables[hashi];
+
+			while (cur)
+			{
+				if (cur->_kv.first == key)
+				{
+					return cur;
+				}
+
+				cur = cur->_next;
+			}
+
+			return nullptr;
+		}
+
+		bool Erase(const K& key)
+		{
+			Hash hs;
+			size_t hashi = hs(key) % _tables.size();
+			Node* prev = nullptr;
+			Node* cur = _tables[hashi];
+
+			while (cur)
+			{
+				if (cur->_kv.first == key)
+				{
+					// 删除
+					if (prev == nullptr)
+					{
+						// 桶中第一个节点
+						_tables[hashi] = cur->_next;
+					}
+					else
+					{
+						prev->_next = cur->_next;
+					}
+
+					--_n;
+					delete cur;
+					return true;
+				}
+				prev = cur;
+				cur = cur->_next;
+			}
+
+			return false;
+		}
+	private:
+		std::vector<Node*> _tables;
+		size_t _n;
+	};
+}
