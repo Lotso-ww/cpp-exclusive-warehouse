@@ -6,7 +6,7 @@ using namespace std;
 
 #include"HashTable.h"
 
-void TestHT1()
+void TestHT1()//
 {
 	int a[] = { 19,30,5,36,13,20,21,12,58 };
 	HashTable<int, int> ht;
