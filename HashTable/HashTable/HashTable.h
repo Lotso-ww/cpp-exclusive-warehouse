@@ -173,13 +173,15 @@ private:
 	size_t _n = 0;// 已存储的数据个数
 };
 
+// 链地址法哈希表（哈希桶）
 namespace hash_bucket
 {
+
 	template<class K, class V>
 	struct HashNode
 	{
-		pair<K, V> _kv;
-		HashNode<K,V>* _next;
+		pair<K, V> _kv; // 哈希桶节点结构（链表节点）
+		HashNode<K,V>* _next; 
 
 		HashNode(const pair<K,V>& kv)
 			:_kv(kv)
@@ -212,18 +214,20 @@ namespace hash_bucket
 			}
 			_n = 0;
 		}
+
+		// 插入key-value对（头插法，支持重复插入，去重需先查找）
 		bool Insert(const pair<K,V>& kv)
 		{
-			// 先查找，避免重复插入
 			if (Find(kv.first))
 				return false;
 
 			Hash hs;
 
-			// 负载因子 == 1 就开始扩容
+			// 1. 负载因子≥1，扩容（链地址法负载因子可大于1）
 			if (_n == _tables.size())
 			{
 				std::vector<Node*> newtables(__stl_next_prime(_tables.size() + 1), nullptr);
+				// 2. 迁移旧表节点到新表（直接移动节点，不新建，效率更高）
 				for (size_t i = 0; i < _tables.size(); i++)
 				{
 					// 遍历旧表，旧表节点重新映射，挪动到新表
@@ -232,8 +236,9 @@ namespace hash_bucket
 					{
 						Node* next = cur->_next;
 
-						// 头插
+						// 3. 重新计算节点在新表的位置
 						size_t hashi = hs(cur->_kv.first) % newtables.size();
+						// 4. 头插入新表
 						cur->_next = newtables[hashi];
 						newtables[hashi] = cur;
 
@@ -247,7 +252,7 @@ namespace hash_bucket
 
 			size_t hashi = hs(kv.first) % _tables.size();
 
-			// 头插
+			// 5. 头插入当前节点
 			Node* newnode = new Node(kv);
 			newnode->_next = _tables[hashi];
 			_tables[hashi] = newnode;
@@ -256,6 +261,7 @@ namespace hash_bucket
 			return true;
 		}
 
+		// 查找key，返回节点指针（nullptr表示未找到）
 		Node* Find(const K& key)
 		{
 			Hash hs;
@@ -275,6 +281,7 @@ namespace hash_bucket
 			return nullptr;
 		}
 
+		// 删除key（链表节点删除）
 		bool Erase(const K& key)
 		{
 			Hash hs;
@@ -308,7 +315,7 @@ namespace hash_bucket
 			return false;
 		}
 	private:
-		std::vector<Node*> _tables;
+		std::vector<Node*> _tables;// 指针数组（存储链表头指针）
 		size_t _n;
 	};
 }

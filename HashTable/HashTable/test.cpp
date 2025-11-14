@@ -122,6 +122,9 @@ namespace hash_bucket
 
 int main()
 {
+	cout << "²âÊÔ2:" << endl;
 	hash_bucket::TestHT1();
+	cout << endl;
+	cout << "²âÊÔ3:" << endl;
 	hash_bucket::TestHT2();
 }
