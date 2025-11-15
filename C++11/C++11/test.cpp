@@ -88,7 +88,7 @@ using namespace std;
 //	vector<Date> v;
 //	v.push_back(d1);
 //	v.push_back(Date(2025, 1, 1));
-//	// ⽐起有名对象和匿名对象传参，这里{}更有性价比
+//	// 比起有名对象和匿名对象传参，这里{}更有性价比
 //	v.push_back({ 2025, 1, 1 });
 //	
 //
@@ -238,34 +238,34 @@ using namespace std;
 //}
 
 
-//void f(int& x)
-//{
-//	std::cout << "左值引用重载 f(" << x << ")\n";
-//}
-//void f(const int& x)
-//{
-//	std::cout << "到 const 的左值引用重载 f(" << x << ")\n";
-//}
-//void f(int&& x)
-//{
-//	std::cout << "右值引用重载 f(" << x << ")\n";
-//}
-//int main()
-//{
-//	int i = 1;
-//	const int ci = 2;
-//	f(i); // 调用 f(int&)
-//	f(ci); // 调用 f(const int&)
-//	f(3); // 调用 f(int&&)，如果没有 f(int&&) 重载则会调用 f(const int&)
-//	f(std::move(i)); // 调用 f(int&&)
-//
-//
-//	// 右值引用变量在用于表达式时是左值
-//	int&& x = 1;
-//	f(x); // 调用 f(int& x)
-//	f(std::move(x)); // 调用 f(int&& x)
-//	return 0;
-//}
+void f(int& x)
+{
+	std::cout << "左值引用重载 f(" << x << ")\n";
+}
+void f(const int& x)
+{
+	std::cout << "到 const 的左值引用重载 f(" << x << ")\n";
+}
+void f(int&& x)
+{
+	std::cout << "右值引用重载 f(" << x << ")\n";
+}
+int main()
+{
+	int i = 1;
+	const int ci = 2;
+	f(i); // 调用 f(int&)
+	f(ci); // 调用 f(const int&)
+	f(3); // 调用 f(int&&)，如果没有 f(int&&) 重载则会调用 f(const int&)
+	f(std::move(i)); // 调用 f(int&&)
+
+
+	// 右值引用变量在用于表达式时是左值
+	int&& x = 1;
+	f(x); // 调用 f(int& x)
+	f(std::move(x)); // 调用 f(int&& x)
+	return 0;
+}
 
 
 //#define _CRT_SECURE_NO_WARNINGS 1
