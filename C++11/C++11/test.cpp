@@ -6,7 +6,7 @@
 #include<string>
 using namespace std;
 
-//struct Point///
+//struct Point
 //{
 //	int _x;
 //	int _y;
