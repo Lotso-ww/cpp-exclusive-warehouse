@@ -9,25 +9,19 @@ namespace Lotso
 		list_node<T>* _prev;
 		T _data;
 
-		//list_node(const T& x = T())
-		//	:_next(nullptr)
-		//	,_prev(nullptr)
-		//	,_data(x)  // 拷贝构造
-		//{}
 
-		//list_node(T&& x)
-		//	:_next(nullptr)
-		//	, _prev(nullptr)
-		//	, _data(move(x)) // 移动构造或拷贝构造
-		//{}
-
-		template<class X>
-		list_node(X&& x = X())
+		list_node(T&& data)
 			:_next(nullptr)
 			, _prev(nullptr)
-			, _data(forward<X>(x))  // 拷贝构造
-		{
-		}
+			, _data(move(data)) // 移动构造或拷贝构造
+		{}
+
+		template<class... Args>
+		list_node(Args&&... args)
+			: _next(nullptr)
+			, _prev(nullptr)
+			, _data(std::forward<Args>(args)...) // 移动构造或拷贝构造
+		{}
 	};
 
 	template<class T, class Ref, class Ptr>
@@ -92,6 +86,7 @@ namespace Lotso
 		}
 	};
 
+
 	template<class T>
 	class list
 	{
@@ -125,7 +120,7 @@ namespace Lotso
 
 		void empty_init()
 		{
-			_head = new Node(T());
+			_head = new Node;
 			_head->_next = _head;
 			_head->_prev = _head;
 		}
@@ -135,7 +130,6 @@ namespace Lotso
 			empty_init();
 		}
 
-		// 9:09
 		list(initializer_list<T> il)
 		{
 			empty_init();
@@ -243,30 +237,19 @@ namespace Lotso
 			}
 		}
 
-		//void push_back(const T& x)
-		//{
-		//	insert(end(), x);
-		//}
-
-		//// 不是万能引用
-		//// 因为T是list的参数，list<Lotso::string>实例化时，T就确定了。
-		//void push_back(T&& x)
-		//{
-		//	insert(end(), move(x));
-		//}
-
-		template <class... Args>
-		void emplace_back(Args&&... args);
-
-		template<class X>
-		void push_back(X&& x)
+		void push_back(const T& x)
 		{
-			// 保持x的属性往下传递
-			// 实例化push_back(Lotso::string&& x)，保持右值属性往下传递
-			// 实例化push_back(Lotso::string& x)，保持左值属性往下传递
-			insert(end(), forward<X>(x));
+			insert(end(), x);
 		}
 
+		// 不是万能引用
+		// 因为T是list的参数，list<Lotso::string>实例化时，T就确定了。
+		void push_back(T&& x)
+		{
+			insert(end(), move(x));
+		}
+
+		
 		void push_front(const T& x)
 		{
 			insert(begin(), x);
@@ -282,42 +265,26 @@ namespace Lotso
 			erase(begin());
 		}
 
-		//void insert(iterator pos, const T& x)
-		//{
-		//	Node* cur = pos._node;
-		//	Node* prev = cur->_prev;
-		//	Node* newnode = new Node(x);
-
-		//	// prev newnode cur
-		//	prev->_next = newnode;
-		//	newnode->_prev = prev;
-		//	newnode->_next = cur;
-		//	cur->_prev = newnode;
-
-		//	++_size;
-		//}
-
-		//void insert(iterator pos, T&& x)
-		//{
-		//	Node* cur = pos._node;
-		//	Node* prev = cur->_prev;
-		//	Node* newnode = new Node(move(x));
-
-		//	// prev newnode cur
-		//	prev->_next = newnode;
-		//	newnode->_prev = prev;
-		//	newnode->_next = cur;
-		//	cur->_prev = newnode;
-
-		//	++_size;
-		//}
-
-		template<class X>
-		void insert(iterator pos, X&& x)
+		void insert(iterator pos, const T& x)
 		{
 			Node* cur = pos._node;
 			Node* prev = cur->_prev;
-			Node* newnode = new Node(forward<X>(x));
+			Node* newnode = new Node(x);
+
+			// prev newnode cur
+			prev->_next = newnode;
+			newnode->_prev = prev;
+			newnode->_next = cur;
+			cur->_prev = newnode;
+
+			++_size;
+		}
+
+		void insert(iterator pos, T&& x)
+		{
+			Node* cur = pos._node;
+			Node* prev = cur->_prev;
+			Node* newnode = new Node(move(x));
 
 			// prev newnode cur
 			prev->_next = newnode;
@@ -352,6 +319,44 @@ namespace Lotso
 			}
 			return n;*/
 			return _size;
+		}
+
+		template<class... Args>
+		void emplace_back(Args&&... args)
+		{
+			insert(end(), std::forward<Args>(args)...);
+		}
+
+		// 原理：本质编译器根据可变参数模板生成对应参数的函数
+		/*void emplace_back(string& s)
+		{
+			insert(end(), std::forward<string>(s));
+		}
+		void emplace_back(string&& s)
+		{
+			insert(end(), std::forward<string>(s));
+		}
+		void emplace_back(const char* s)
+		{
+			insert(end(), std::forward<const char*>(s));
+		}
+		*/
+
+		template<class... Args>
+		iterator insert(iterator pos,Args&&... args)
+		{
+			Node* cur = pos._node;
+			Node* newnode = new Node(std::forward<Args>(args)...);
+			Node* prev = cur->_prev;
+
+			// prev newnode cur
+			prev->_next = newnode;
+			newnode->_prev = prev;
+			newnode->_next = cur;
+
+			cur->_prev = newnode;
+
+			return iterator(newnode);
 		}
 
 	private:
