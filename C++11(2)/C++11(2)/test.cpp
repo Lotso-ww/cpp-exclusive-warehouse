@@ -156,7 +156,7 @@ using namespace std;
 //{
 //    cout << 2 << endl;
 //}
-
+//
 //int main()
 //{
 //    double x = 2.2;
@@ -203,7 +203,7 @@ using namespace std;
 //    return 0;
 //}
 
-
+//
 //// 折叠表达式 C++17
 //template<class ...Args>
 //void Print(Args... args)
@@ -211,9 +211,9 @@ using namespace std;
 //	((cout << args << " "), ...);
 //	cout << endl;
 //}
-
-
-
+//
+//
+//
 //// Print(1,string("xxxxx"),2.2);
 //// 实例化为下面的函数
 ////void Print(int x, string y, double z)
@@ -233,10 +233,11 @@ using namespace std;
 //	return 0;
 //}
 
+#include<iostream>
 #include<assert.h>
 #include<string.h>
 #include<algorithm>
-
+using namespace std;
 
 namespace Lotso
 {
@@ -417,52 +418,112 @@ namespace Lotso
 //	return 0;
 //}
 
+//#include<list>
+//struct Date
+//{
+//public:
+//	Date(int y,int m,int d)
+//		:_y(y)
+//		,_m(m)
+//		,_d(d)
+//	{
+//		cout << "Date() 构造" << endl;
+//	}
+//	Date(const Date& d)
+//		:_y(d._y)
+//		,_m(d._m)
+//		,_d(d._d)
+//	{
+//		cout << "Date(const Date& d) 拷贝构造" << endl;
+//	}
+//
+//	Date(Date&& d)
+//		:_y(d._y)
+//		, _m(d._m)
+//		, _d(d._d)
+//	{
+//		cout << "Date(Date&& d) 移动构造" << endl;
+//	}
+//private:
+//	int _y = 1;
+//	int _m = 1;
+//	int _d = 1;
+//};
+//
+//int main()
+//{
+//	list<pair<Lotso::string, int>> lt1;
+//
+//
+//	// 跟push_back一样
+//	// 构造 pair + 拷贝/移动构造pair到list的节点中data上
+//	pair<Lotso::string, int> kv("苹果",1);
+//	lt1.push_back(kv);
+//	cout << "************************************" << endl;
+//
+//	// 跟push_back一样
+//	lt1.emplace_back(move(kv));
+//	cout << "************************************" << endl;
+//
+//	// 直接把构造pair参数包往下传，直接用pair参数包构造pair
+//	// 这里达到的效果是push_back是做不到的
+//	lt1.emplace_back("苹果", 1);
+//	// lt1.push_back("苹果", 1); // 错误,要传pair或者{}隐式转换pair的值
+//	//lt1.push_back({ "苹果",1 });
+//	cout << "************************************" << endl;
+//
+//	list<Date> lt;
+//	// 构造 + 拷贝构造
+//	Date d1{ 2025,11,18 };
+//	lt.push_back(d1);
+//	// lt.push_back({ 2025,11,18 });
+//	cout << "************************************" << endl;
+//
+//	// 传构造Dtae的参数，传给形参参数包，参数包往下不断传递，最后直接构造到链表节点上
+//	// 直接构造
+//	lt.emplace_back(2025, 11, 18);
+//
+//	return 0;
+//}
 
-struct Date
-{
-public:
-	Date(int y,int m,int d)
-		:_y(y)
-		,_m(m)
-		,_d(d)
-	{}
-private:
-	int _y = 1;
-	int _m = 1;
-	int _d = 1;
-};
 
+
+// Test.cpp
+#include"List.h"
+// emplace_back总体而言是更高效，推荐以后使用emplace系列替代insert和push系列
 int main()
 {
-	list<pair<Lotso::string, int>> lt1;
+	Lotso::list<Lotso::string> lt;
+	// 传左值，跟push_back⼀样，走拷⻉构造
+	Lotso::string s1("111111111111");
+	lt.emplace_back(s1);
+	cout << "*********************************" << endl;
 
+	// 右值，跟push_back⼀样，走移动构造
+	lt.emplace_back(move(s1));
+	cout << "*********************************" << endl;
 
-	// 跟push_back一样
-	// 构造 pair + 拷贝/移动构造pair到list的节点中data上
-	pair<Lotso::string, int> kv("苹果",1);
-	lt1.push_back(kv);
-	cout << "************************************" << endl;
+	// 直接把构造string参数包往下传，直接用string参数包构造string
+	// 这⾥达到的效果是push_back做不到的
+	lt.emplace_back("111111111111");
+	cout << "*********************************" << endl;
 
-	// 跟push_back一样
+	Lotso::list<pair<Lotso::string, int>> lt1;
+	// 跟push_back⼀样
+	// 构造pair + 拷⻉/移动构造pair到list的节点中data上
+	pair<Lotso::string, int> kv("苹果", 1);
+	lt1.emplace_back(kv);
+	cout << "*********************************" << endl;
+
+	// 跟push_back⼀样
 	lt1.emplace_back(move(kv));
-	cout << "************************************" << endl;
+	cout << "*********************************" << endl;
 
-	// 直接把构造pair参数包往下传，直接用pair参数包构造pair
-	// 这里达到的效果是push_back是做不到的
+	////////////////////////////////////////////////////////////////////
+	// 直接把构造pair参数包往下传，直接⽤pair参数包构造pair
+	// 这⾥达到的效果是push_back做不到的
 	lt1.emplace_back("苹果", 1);
-	// lt1.push_back("苹果", 1); // 错误,要传pair或者{}隐式转换pair的值
-	//lt1.push_back({ "苹果",1 });
-	cout << "************************************" << endl;
-
-	list<Date> lt;
-	// 构造 + 拷贝构造
-	Date d1{ 2025,11,18 };
-	lt.push_back(d1);
-	lt.push_back({ 2025,11,18 });
-
-	// 传构造Dtae的参数，传给形参参数包，参数包往下不断传递，最后直接构造到链表节点上
-	// 直接构造
-	lt.emplace_back(2025, 11, 18);
+	cout << "*********************************" << endl;
 
 	return 0;
 }
