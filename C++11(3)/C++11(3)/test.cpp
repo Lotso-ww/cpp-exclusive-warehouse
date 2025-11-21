@@ -160,6 +160,44 @@ namespace Lotso
 	};
 }
 
+
+//class Person
+//{
+//public:
+//	Person(const char* name = "", int age = 0)
+//		:_name(name)
+//		, _age(age)
+//	{
+//	}
+//	/*Person(const Person& p)
+//	:_name(p._name)
+//	,_age(p._age)
+//	{}*/
+//	/*Person& operator=(const Person& p)
+//	{
+//	if(this != &p)
+//	{
+//	_name = p._name;
+//	_age = p._age;
+//	}
+//	return *this;
+//	}*/
+//	/*~Person()
+//{}*/
+//private:
+//	Lotso::string _name;
+//	int _age;
+//};
+//int main()
+//{
+//	Person s1;
+//	Person s2 = s1;
+//	Person s3 = std::move(s1);
+//	Person s4;
+//	s4 = std::move(s2);
+//	return 0;
+//}
+
 //class Person
 //{
 //public:
@@ -182,10 +220,10 @@ namespace Lotso
 //	// C++98
 //	/*Person(const Person& p);*/
 //
-//	Lotso::string _name;
+//	string _name;
 //	int _age;
 //};
-//
+
 //int main()
 //{
 //	Person s1;
@@ -302,11 +340,11 @@ namespace Lotso
 
 
 
-// 关于返回值后置的
-//std::map<std::string, std::pair<std::string, std::string>>::iterator func();
-//auto func()->std::map<std::string, std::pair<std::string, std::string>>::iterator;
-
-
+//// 关于返回值后置的
+//// std::map<std::string, std::pair<std::string, std::string>>::iterator func();
+//// auto func()->std::map<std::string, std::pair<std::string, std::string>>::iterator;
+//
+//
 //int main()
 //{
 //	// 一个简单的lamba表达式
@@ -321,20 +359,20 @@ namespace Lotso
 //	// 3. 返回值可以省略,可以通过返回对象自动推导
 //	// 4. 函数体不可以省略
 //	auto func1 = []
-//		{
-//			cout << "hello Lotso" << endl;
-//			return 0;
-//		};//分号不要掉哈
+//	{
+//		cout << "hello Lotso" << endl;
+//		return 0;
+//	};//分号不要掉哈
 //	func1();
 //
 //
 //	int a = 0, b = 1;
 //	auto swap1 = [](int& x, int& y)
-//		{
-//			int temp = x;
-//			x = y;
-//			y = temp;
-//		};
+//	{
+//		int temp = x;
+//		x = y;
+//		y = temp;
+//	};
 //	swap1(a, b);
 //	cout << a << ":" << b << endl;
 //
@@ -355,8 +393,8 @@ namespace Lotso
 //	{
 //	}
 //};
-//
-//
+
+
 //struct ComparePriceLess
 //{
 //	bool operator()(const Goods& gl, const Goods& gr)
@@ -388,9 +426,9 @@ namespace Lotso
 //		return gl._evaluate > gr._evaluate;
 //	}
 //};
-//
-//
-//
+
+
+
 //int main()
 //{
 //	vector<Goods> v = { { "苹果", 2.1, 5 }, { "香蕉", 3, 4 }, { "橙子", 2.2, 3}, { "菠萝", 1.5, 4 } };
@@ -433,6 +471,12 @@ namespace Lotso
 //}
 
 //int x = 0;
+//// 这里捕捉列表必须为空,因为全局变量不用捕捉就可以用,没有可以被捕捉的变量(静态成员变量也是同样的道理)
+//auto func1 = []()
+//	{
+//		x++;
+//	};
+//
 //
 //int main()
 //{
@@ -506,34 +550,28 @@ namespace Lotso
 //	cout << a << " " << b << " " << c << " " << d << endl;
 //
 //	// 局部的静态和全局变量不能捕捉，也不需要捕捉
-//	//static int m = 0;
-//	//auto func6 = []
-//	//{
-//	//	int ret = x + m;
-//	//	return ret;
-//	//};
+//	static int m = 0;
+//	auto func6 = []
+//	{
+//		int ret = x + m;
+//		return ret;
+//	};
 //
-//	//// 传值捕捉本质是⼀种拷⻉,并且被const修饰了
-//	//// mutable相当于去掉const属性，可以修改了
-// //   // 但是修改了不会影响外⾯被捕捉的值，因为是⼀种拷⻉
-//	//auto func7 = [=]()mutable
-//	//{
-//	//	a++;
-//	//	b++;
-//	//	c++;
-//	//		d++;
-//	//	return a + b + c + d;
-//	//};
-//	//cout << func7() << endl;
-//	//cout << a << " " << b << " " << c << " " << d << endl;
+//	// 传值捕捉本质是⼀种拷⻉,并且被const修饰了
+//	// mutable相当于去掉const属性，可以修改了
+//    // 但是修改了不会影响外⾯被捕捉的值，因为是⼀种拷⻉
+//	auto func7 = [=]()mutable
+//	{
+//		a++;
+//		b++;
+//		c++;
+//			d++;
+//		return a + b + c + d;
+//	};
+//	cout << func7() << endl;
+//	cout << a << " " << b << " " << c << " " << d << endl;
 //}
 
-//int x = 0;
-//// 这里捕捉列表必须为空,因为全局变量不用捕捉就可以用,没有可以被捕捉的变量(静态成员变量也是同意的道理)
-//auto func1 = []()
-//{
-//	x++;
-//};
 
 //class A
 //{
@@ -588,24 +626,24 @@ int main()
 {
 	int a = 0, b = 1, c = 2, d = 3;
 	//class lambada5(const int& a_, int& b_) //也行，但是int没必要
-	class lambada5
-	{
-	public:
-		lambada5(int a_, int& b_)
-			:a(a_)
-			,b(b_)
-		{}
+	//class lambada5
+	//{
+	//public:
+	//	lambada5(int a_, int& b_)
+	//		:a(a_)
+	//		,b(b_)
+	//	{}
 
-		int operator()(int x)
-		{
-			//a++;
-			++b;
-			return a + b + x;
-		}
-	private:
-		const int a;//对应值捕捉
-		int& b;// 对应引用捕捉
-	};
+	//	int operator()(int x)
+	//	{
+	//		//a++;
+	//		++b;
+	//		return a + b + x;
+	//	}
+	//private:
+	//	const int a;//对应值捕捉
+	//	int& b;// 对应引用捕捉
+	//};
 
 	// 可以看看汇编层
 	auto func = [a, &b](int x)
