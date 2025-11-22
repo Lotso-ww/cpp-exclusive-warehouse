@@ -1,8 +1,8 @@
 #include<iostream>
 using namespace std;
 
-#include<exception>
-
+//#include<exception>
+//
 //double Divide(int a, int b)
 //{
 //	// 当 b == 0 时抛出异常
@@ -224,59 +224,59 @@ void HttpServer()
 //}
 
 
-// 下面程序模拟展示了聊天时发送消息，发送失败补货异常，但是可能在
-// 电梯地下室等场景手机信号不好，则需要多次尝试
-// 如果多次尝试都发送不出去，则就需要捕获异常再重新抛出，
-// 其次如果不是网络差导致的错误，捕获后也要重新抛出。
-
-void _SendMsg(const string& s)
-{
-	if (rand() % 2 == 0)
-	{
-		throw HttpException("网络不稳定,发送失败",102, "put");
-	}
-	else if (rand() % 7 == 0)
-	{
-		throw HttpException("你已经不是对方的好友,发送失败", 102, "put");
-	}
-	else
-	{
-		cout << "发送成功" << endl;
-	}
-}
-
-// 网络不稳定,要求重试三次,均失败
-void SendMsg(const string& s)
-{
-	for (size_t i = 0; i < 4; i++)
-	{
-		try
-		{
-			_SendMsg(s);
-
-			// 走到这里,如果没有抛异常导致结束
-			// 那就代表成功了,可以执行到这个break,跳出循环
-			break;
-		}
-		catch (const Exception& e)
-		{
-			if (e.getid() == 102)
-			{
-				if (i == 3)
-					throw;
-
-				cout << "开始第" << i + 1 << "重试" << endl;
-			}
-			else
-			{
-				// 重新抛出异常
-				// throw e;
-				throw;
-			}
-		}
-	}
-}
-
+//// 下面程序模拟展示了聊天时发送消息，发送失败补货异常，但是可能在
+//// 电梯地下室等场景手机信号不好，则需要多次尝试
+//// 如果多次尝试都发送不出去，则就需要捕获异常再重新抛出，
+//// 其次如果不是网络差导致的错误，捕获后也要重新抛出。
+//
+//void _SendMsg(const string& s)
+//{
+//	if (rand() % 2 == 0)
+//	{
+//		throw HttpException("网络不稳定,发送失败",102, "put");
+//	}
+//	else if (rand() % 7 == 0)
+//	{
+//		throw HttpException("你已经不是对方的好友,发送失败", 102, "put");
+//	}
+//	else
+//	{
+//		cout << "发送成功" << endl;
+//	}
+//}
+//
+//// 网络不稳定,要求重试三次,均失败
+//void SendMsg(const string& s)
+//{
+//	for (size_t i = 0; i < 4; i++)
+//	{
+//		try
+//		{
+//			_SendMsg(s);
+//
+//			// 走到这里,如果没有抛异常导致结束
+//			// 那就代表成功了,可以执行到这个break,跳出循环
+//			break;
+//		}
+//		catch (const Exception& e)
+//		{
+//			if (e.getid() == 102)
+//			{
+//				if (i == 3)
+//					throw;
+//
+//				cout << "开始第" << i + 1 << "重试" << endl;
+//			}
+//			else
+//			{
+//				// 重新抛出异常
+//				// throw e;
+//				throw;
+//			}
+//		}
+//	}
+//}
+//
 //int main()
 //{
 //	srand(time(0));
@@ -362,5 +362,53 @@ int main()
 	//cout << noexcept(Func()) << endl;
 	//cout << noexcept(++i) << endl;
 
+	return 0;
+}
+
+
+// C++11标记不会抛异常的方法
+// double Divide(int a, int b) noexcept
+// C++98用来标记会抛异常的方法
+// double Divide(int a,int b) throw(const char*)
+
+// C++98
+// 这里表示这个函数只会抛出bad_alloc的异常
+// void* operator new (std::size_t size) throw (std::bad_alloc);
+// 这里表示这个函数不会抛出异常
+// void* operator delete (std::size_t size, void* ptr) throw();
+// C++11
+// size_type size() const noexcept;
+// iterator begin() noexcept;
+// const_iterator begin() const noexcept;
+
+double Divide(int a, int b) noexcept
+{
+	// 当b == 0时抛出异常
+	if (b == 0)
+	{
+		throw "Division by zero condition!";
+	}
+	return (double)a / (double)b;
+}
+int main()
+{
+	try
+	{
+		int len, time;
+		cin >> len >> time;
+		cout << Divide(len, time) << endl;
+	}
+	catch (const char* errmsg)
+	{
+		cout << errmsg << endl;
+	}
+	catch (...)
+	{
+		cout << "Unkown Exception" << endl;
+	}
+	int i = 0;
+	cout << noexcept(Divide(1, 2)) << endl;
+	cout << noexcept(Divide(1, 0)) << endl;
+	cout << noexcept(++i) << endl;
 	return 0;
 }
