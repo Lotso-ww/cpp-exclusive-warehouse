@@ -2,38 +2,38 @@
 #include<iostream>
 using namespace std;
 
-//template<class T>
-//class SmartPtr
-//{
-//public:
-//	// RAII
-//	SmartPtr(T* ptr)
-//		:_ptr(ptr)
-//	{}
-//
-//	~SmartPtr()
-//	{
-//		cout << "delete []:" << _ptr << endl;
-//		delete[] _ptr;
-//	}
-//
-//	T& operator*()
-//	{
-//		return *_ptr;
-//	}
-//
-//	T* operator->()
-//	{
-//		return _ptr;
-//	}
-//
-//	T& operator[](size_t i)
-//	{
-//		return _ptr[i];
-//	}
-//private:
-//	T* _ptr;
-//};
+template<class T>
+class SmartPtr
+{
+public:
+	// RAII
+	SmartPtr(T* ptr)
+		:_ptr(ptr)
+	{}
+
+	~SmartPtr()
+	{
+		cout << "delete []:" << _ptr << endl;
+		delete[] _ptr;
+	}
+
+	T& operator*()
+	{
+		return *_ptr;
+	}
+
+	T* operator->()
+	{
+		return _ptr;
+	}
+
+	T& operator[](size_t i)
+	{
+		return _ptr[i];
+	}
+private:
+	T* _ptr;
+};
 
 //int main()
 //{
@@ -117,43 +117,43 @@ public:
 
 //int main()
 //{
-	//// 拷贝对象存在问题
-	//SmartPtr<int> sp1 = new int[10];
-	//SmartPtr<int> sp2(sp1);
-
-	//auto_ptr<A> ap1(new A);
-	//ap1->_a1++;
-
-	//// 管理全转移,ap1悬空
-	//auto_ptr<A> ap2(ap1);
-	//// ap1->_a1++; // 这个时候就报错了
-	//ap2->_a1++;
-
-	//unique_ptr<A> up1(new A);
-	//// 不允许拷贝
-	//// unique_ptr<A> up2(up1);
-	//// unique_ptr<A> up2(move(up1)); // 可以移动
-	//up1->_a1++;
-
-	//up1.release();
-
-	//// if(up1)
-	//if (up1.operator bool())
-	//{
-	//	cout << "up1不为空" << endl;
-	//}
-	//else
-	//{
-	//	cout << "up1为空" << endl;
-	//}
-
-	//shared_ptr<A> sp1(new A);
-	// 支持拷贝
-	//shared_ptr<A> sp2(sp1);
-	//sp1->_a1++;
-
-	//return 0;
-
+//	// 拷贝对象存在问题
+//	SmartPtr<int> sp1 = new int[10];
+//	SmartPtr<int> sp2(sp1);
+//
+//	auto_ptr<A> ap1(new A);
+//	ap1->_a1++;
+//
+//	// 管理全转移,ap1悬空
+//	auto_ptr<A> ap2(ap1);
+//	// ap1->_a1++; // 这个时候就报错了
+//	ap2->_a1++;
+//
+//	unique_ptr<A> up1(new A);
+//	// 不允许拷贝
+//	// unique_ptr<A> up2(up1);
+//	// unique_ptr<A> up2(move(up1)); // 可以移动
+//	up1->_a1++;
+//
+//	up1.release();
+//
+//	// if(up1)
+//	if (up1.operator bool())
+//	{
+//		cout << "up1不为空" << endl;
+//	}
+//	else
+//	{
+//		cout << "up1为空" << endl;
+//	}
+//
+//	shared_ptr<A> sp3(new A);
+//	// 支持拷贝
+//	shared_ptr<A> sp4(sp3);
+//	sp3->_a1++;
+//
+//	return 0;
+//
 //}
 
 #include<functional>
@@ -289,47 +289,52 @@ namespace Lotso
 //	sp1 = sp3;
 //}
 
-//template<class T>
-//void DeleteArrayFunc(T* ptr)
-//{
-//	delete[] ptr;
-//}
-//
-//template<class T>
-//class DeleteArray
-//{
-//public:
-//	void operator()(T* ptr)
-//	{
-//		delete[] ptr;
-//	}
-//};
+template<class T>//
+void DeleteArrayFunc(T* ptr)
+{
+	delete[] ptr;
+}
 
-//int main()
-//{
-//	// 定制删除器
-//	Lotso::shared_ptr<A> sp1(new A[10], DeleteArray<A>());// 仿函数
-//	Lotso::shared_ptr<A> sp2(new A[10], DeleteArrayFunc<A>);// 函数指针
-//
-//	// 推荐
-//	Lotso::shared_ptr<A> sp3(new A[10], [](A* ptr) {delete[] ptr; });// lambda
-//	Lotso::shared_ptr<FILE> sp4(fopen("Test.cpp", "r"), [](FILE* ptr) {fclose(ptr); });
-//	Lotso::shared_ptr<A> sp5(new A);
-//
-//	// 删除器的位置是一致的,shared_ptr在构造函数参数,unique_ptr类模版的参数
-//	std::unique_ptr<A, DeleteArray<A>> up1(new A[10]); // 仿函数
-//	std::unique_ptr<A, void(*)(A*)> up2(new A[10], DeleteArrayFunc<A>);// 函数指针
-//	auto del = [](A* ptr) {delete[] ptr; };
-//	std::unique_ptr<A, decltype(del)> up3(new A[10], del); // lambda
-//
-//	// 更简洁的方式
-//	std::shared_ptr<A[]> sp10(new A[10]);
-//	std::unique_ptr<A[]> up10(new A[10]);
-//
-//	auto sp11 = make_shared<A>(1, 1);
-//
-//	return 0;
-//}
+template<class T>
+class DeleteArray
+{
+public:
+	void operator()(T* ptr)
+	{
+		delete[] ptr;
+	}
+};
+
+int main()
+{
+	// 定制删除器
+	Lotso::shared_ptr<A> sp1(new A[10], DeleteArray<A>());// 仿函数
+	Lotso::shared_ptr<A> sp2(new A[10], DeleteArrayFunc<A>);// 函数指针
+
+	// 推荐
+	Lotso::shared_ptr<A> sp3(new A[10], [](A* ptr) {delete[] ptr; });// lambda
+	Lotso::shared_ptr<FILE> sp4(fopen("Test.cpp", "r"), [](FILE* ptr) {fclose(ptr); });
+	Lotso::shared_ptr<A> sp5(new A);
+
+	// 删除器的位置是一致的,shared_ptr在构造函数参数,unique_ptr类模版的参数
+	// 这里没有使用相同的方式还是挺坑的
+	// 使用仿函数unique_ptr可以不在构造函数传递，因为仿函数类型构造的对象直接就可以调用
+	// 但是下面的函数指针和lambda的类型不可以
+	std::unique_ptr<A, DeleteArray<A>> up1(new A[10]); // 仿函数
+	std::unique_ptr<A, void(*)(A*)> up2(new A[10], DeleteArrayFunc<A>);// 函数指针
+	auto del = [](A* ptr) {delete[] ptr; };
+	std::unique_ptr<A, decltype(del)> up3(new A[10], del); // lambda
+
+	// 更简洁的方式
+	// 因为new[]经常使用，所以unique_ptr和shared_ptr
+	// 实现了?个特化版本，这个特化版本析构时用的delete[]
+	std::shared_ptr<A[]> sp10(new A[10]);
+	std::unique_ptr<A[]> up10(new A[10]);
+
+	auto sp11 = make_shared<A>(1, 1);
+
+	return 0;
+}
 
 //struct ListNode
 //{
@@ -394,12 +399,13 @@ namespace Lotso
 //	return 0;
 //}
 
-//int main()
-//{
-//	// 申请一个1G未释放，这个程序多次运行也没啥危害
-//	// 因为程序马上就结束，进程结束各种资源也就回收了
-//	char* ptr = new char[1024 * 1024 * 1024];
-//	cout << (void*)ptr << endl;
-//
-//	return 0;
-//}
+int main()
+{
+	// 申请一个1G未释放，这个程序多次运行也没啥危害
+	// 因为程序马上就结束，进程结束各种资源也就回收了
+	char* ptr = new char[1024 * 1024 * 1024];
+	cout << (void*)ptr << endl;
+
+	return 0;
+}
+
